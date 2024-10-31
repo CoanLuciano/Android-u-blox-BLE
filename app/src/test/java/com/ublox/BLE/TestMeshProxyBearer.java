@@ -5,8 +5,8 @@ import com.ublox.BLE.datapump.DataStream;
 import com.ublox.BLE.mesh.MeshProxyBearer;
 import com.ublox.BLE.utils.GattAttributes;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ public class TestMeshProxyBearer {
     BluetoothPeripheral mockPeripheral;
     DataStream.Delegate mockDelegate;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockPeripheral = mock(BluetoothPeripheral.class);
         mockDelegate = mock(DataStream.Delegate.class);
@@ -31,21 +31,21 @@ public class TestMeshProxyBearer {
         bearer.setDelegate(mockDelegate);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void openSetsPreferredMtu() {
         bearer.open();
 
         verify(mockPeripheral, times(1)).setPreferredMtu(69);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void openCallsConnect() {
         bearer.open();
 
         verify(mockPeripheral, times(1)).connect();
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void onConnectedDoDiscover() {
         when(mockPeripheral.getState()).thenReturn(BluetoothPeripheral.State.CONNECTED);
 
@@ -56,7 +56,7 @@ public class TestMeshProxyBearer {
         verify(mockPeripheral, times(1)).discover();
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void onDiscoverySetNotifyOnDataOut() {
         UUID dataOut = UUID.fromString(GattAttributes.UUID_CHARACTERISTIC_MESH_PROXY_DATA_OUT);
         when(mockPeripheral.getState()).thenReturn(BluetoothPeripheral.State.CONNECTED);
@@ -68,7 +68,7 @@ public class TestMeshProxyBearer {
         verify(mockPeripheral, times(1)).set(dataOut, true);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void onNotifySetRequestHighPrio() {
 
         UUID dataOut = UUID.fromString(GattAttributes.UUID_CHARACTERISTIC_MESH_PROXY_DATA_OUT);
@@ -82,7 +82,7 @@ public class TestMeshProxyBearer {
         verify(mockPeripheral, times(1)).requestConnectionPriority(BluetoothPeripheral.Priority.HIGH);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void onProbablyBeaconReceivedRequestNormalPrio() {
 
         mockOpen();
@@ -99,7 +99,7 @@ public class TestMeshProxyBearer {
         assertThat(bearer.getState(), equalTo(DataStream.State.OPENED));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void readDataComesThrough() {
 
         mockOpen();
@@ -107,7 +107,7 @@ public class TestMeshProxyBearer {
         verify(mockDelegate, times(1)).dataStreamRead(bearer, new byte[0]);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void writeToDataIn() {
         mockOpen();
 
@@ -119,7 +119,7 @@ public class TestMeshProxyBearer {
         verify(mockPeripheral, times(1)).write(dataIn, data, false);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void writeCallsBack() {
 
         mockOpen();

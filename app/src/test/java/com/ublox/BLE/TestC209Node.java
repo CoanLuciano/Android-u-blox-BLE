@@ -2,9 +2,9 @@ package com.ublox.BLE;
 
 import com.ublox.BLE.mesh.C209Node;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import no.nordicsemi.android.meshprovisioner.opcodes.ApplicationMessageOpCodes;
 
@@ -18,12 +18,12 @@ public class TestC209Node {
 
     C209Node node;
 
-    @Before
+    @BeforeEach
     public void setup() {
         node = new C209Node(1);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void correctlyParsesOutSensorValues() {
         byte[] parameters = {
             0x07, 0x4E, 0x0, 0x50, b(0xC3), 0x0, // 500 Lux
@@ -69,7 +69,7 @@ public class TestC209Node {
         assertThat(node.getTemperature(), empty());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void correctlySkipMissingHumidity() {
         byte[] parameters = {
             0x07, 0x4E, 0x0, 0x50, b(0xC3), 0x0, // 500 Lux
@@ -95,7 +95,7 @@ public class TestC209Node {
         assertThat(node.getPressure(), empty());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void correctlySkipMissingOrientation() {
         byte[] parameters = {
             0x07, 0x4E, 0x0, 0x50, b(0xC3), 0x0, // 500 Lux
@@ -110,7 +110,7 @@ public class TestC209Node {
         assertThat(node.getZ(), is(0));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void correctlyKeepSensorData() {
         byte[] parameters = {
             0x07, 0x4E, 0x0, 0x50, b(0xC3), 0x0, // 500 Lux
@@ -126,7 +126,7 @@ public class TestC209Node {
         assertThat(node.getIlluminance().size(), is(2));
     }
 
-    @Ignore("Timing-dependant test, will fail sometimes")
+    @Disabled("Timing-dependant test, will fail sometimes")
     @Test
     public void correctlyClearOnlyOlderSensorData() {
         byte[] parameters = {
@@ -145,7 +145,7 @@ public class TestC209Node {
         assertThat(node.getIlluminance().size(), is(1));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void dontCastExceptionOnEmptyParameter() {
         node.offerMeshMessage(SENSOR_STATUS_OP, new byte[0]);
     }
@@ -184,12 +184,12 @@ public class TestC209Node {
         assertThat(node.getLedSaturation(), is(0xFFFF));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void presentGenericNameIfNoAlias() {
         assertThat(node.getName(), equalTo("Node: 1"));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void presentAliasIfPresent() {
         String alias = "Generic Alias";
         node.setAlias(alias);

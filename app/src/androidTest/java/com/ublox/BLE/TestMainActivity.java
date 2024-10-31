@@ -5,9 +5,9 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ublox.BLE.activities.MainActivity;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -25,7 +25,7 @@ public class TestMainActivity {
     @Rule
     public ActivityTestRule<MainActivity> act = new MainWithBluetoothTestRule();
 
-    @Before
+    @BeforeEach
     public void setup() {
         waitFor(500);
     }
@@ -46,7 +46,7 @@ public class TestMainActivity {
         onView(withId(R.id.menu_connect)).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void reconnectToDevice() {
         onView(withId(R.id.menu_disconnect)).perform(click());
         onView(withId(R.id.menu_connect)).perform(click());

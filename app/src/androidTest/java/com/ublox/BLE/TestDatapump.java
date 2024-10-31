@@ -5,9 +5,9 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ublox.BLE.activities.MainActivity;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -24,7 +24,7 @@ public class TestDatapump {
     @Rule
     public ActivityTestRule<MainActivity> activityTestRule = new MainWithBluetoothTestRule();
 
-    @Before
+    @BeforeEach
     public void setup() {
         waitFor(500);
         onView(withText("TEST")).perform(click());

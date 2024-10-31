@@ -12,9 +12,9 @@ import com.ublox.BLE.bluetooth.BluetoothCentral;
 import com.ublox.BLE.bluetooth.BluetoothPeripheral;
 import com.ublox.BLE.utils.GattAttributes;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
@@ -46,7 +46,7 @@ public class TestDevicesActivity {
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION);
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockScanner = mock(BluetoothCentral.class);
 
@@ -57,19 +57,19 @@ public class TestDevicesActivity {
         }
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void openAboutPage() {
         onView(withId(R.id.menu_about)).perform(click());
         onView(withId(R.id.bVisit)).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void startCallsScan() {
         onView(withId(R.id.menu_scan)).perform(click());
         verify(mockScanner, atLeastOnce()).scan(any());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void whenScanStartedDisplayStop() {
         when(mockScanner.getState()).thenReturn(BluetoothCentral.State.SCANNING);
         act.getActivity().centralChangedState(mockScanner);
@@ -77,7 +77,7 @@ public class TestDevicesActivity {
         onView(withId(R.id.menu_stop)).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void stopCallsStopOnScan() {
         when(mockScanner.getState()).thenReturn(BluetoothCentral.State.SCANNING);
         act.getActivity().centralChangedState(mockScanner);
@@ -85,7 +85,7 @@ public class TestDevicesActivity {
         verify(mockScanner, atLeastOnce()).stop();
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void whenStoppedDisplayScanAgain() {
         when(mockScanner.getState()).thenReturn(
             BluetoothCentral.State.SCANNING,
@@ -99,7 +99,7 @@ public class TestDevicesActivity {
         onView(withId(R.id.menu_scan)).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void displayScannedPeripherals() {
         listMockedPeripherals();
 
@@ -109,7 +109,7 @@ public class TestDevicesActivity {
         onData(withDevice("00:00:00:00:00:01")).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void filterWithSps() {
         listMockedPeripherals();
         onView(withId(R.id.checkBoxSps)).perform(click());
@@ -118,7 +118,7 @@ public class TestDevicesActivity {
         onData(withDevice("00:00:00:00:00:01")).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void filterDevicesAreSavedAnyway() {
         onView(withId(R.id.checkBoxSps)).perform(click());
         listMockedPeripherals();
@@ -130,7 +130,7 @@ public class TestDevicesActivity {
         onData(withDevice("00:00:00:00:00:01")).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void filterOnName() {
         listMockedPeripherals();
 
@@ -150,7 +150,7 @@ public class TestDevicesActivity {
         onData(withDevice("00:00:00:00:00:02")).check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void filterCombineNameAndSps() {
         listMockedPeripherals();
 
@@ -161,7 +161,7 @@ public class TestDevicesActivity {
     }
 
 
-    @Test()
+    @org.junit.jupiter.api.Test()
     public void connect() {
         listMockedPeripherals();
         try {

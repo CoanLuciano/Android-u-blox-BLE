@@ -2,14 +2,14 @@ package com.ublox.BLE;
 
 import com.ublox.BLE.utils.PacketChunker;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestPacketChunker {
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void exactChunk() {
         byte[] data = {0, 1, 2, 3, 4, 5, 6, 7};
 
@@ -32,7 +32,7 @@ public class TestPacketChunker {
         assertEqual(PacketChunker.chunkify(data, 4), expected);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void emptyChunk() {
         byte[] data = new byte[0];
 

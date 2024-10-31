@@ -2,7 +2,7 @@ package com.ublox.BLE;
 
 import com.ublox.BLE.mesh.C209Network;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -10,7 +10,7 @@ import static org.hamcrest.core.Is.is;
 
 public class TestC209Network {
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void freshNetworkIsEmpty() {
         C209Network network = new C209Network();
 

@@ -2,8 +2,8 @@ package com.ublox.BLE;
 
 import com.ublox.BLE.datapump.StopWatch;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -11,30 +11,30 @@ import static org.junit.Assert.assertThat;
 public class TestStopWatch {
     StopWatch stopWatch;
 
-    @Before
+    @BeforeEach
     public void setup() {
         stopWatch = new StopWatch(new IncrementTimer()); //In production should be like SystemClock::elapsedRealtimeNanos
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void newStopWatchHasElapsedTimeZero() {
         assertThat(stopWatch.elapsedTime(), equalTo(0L));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void startedStopWatchIncreasesInTime() {
         stopWatch.start();
         assertThat(stopWatch.elapsedTime(), equalTo(1L));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void stopWatchDoesNotIncreaseAfterStop() {
         stopWatch.start();
         stopWatch.stop();
         assertThat(stopWatch.elapsedTime(), equalTo(stopWatch.elapsedTime()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void startingAstartedStopWatchDoesNothing() {
         stopWatch.start();
         stopWatch.elapsedTime();
@@ -51,7 +51,7 @@ public class TestStopWatch {
         assertThat(stopWatch.elapsedTime(), equalTo(middleTime));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void startingAStoppedStopWatchResetsTime() {
         stopWatch.start();
         stopWatch.stop();

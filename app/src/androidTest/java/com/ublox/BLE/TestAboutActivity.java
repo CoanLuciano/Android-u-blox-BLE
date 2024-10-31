@@ -10,7 +10,7 @@ import com.ublox.BLE.activities.AboutActivity;
 
 import org.hamcrest.Matcher;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import static android.app.Activity.RESULT_OK;

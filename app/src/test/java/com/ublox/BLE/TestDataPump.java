@@ -4,8 +4,8 @@ import com.ublox.BLE.datapump.DataPump;
 import com.ublox.BLE.datapump.DataStream;
 import com.ublox.BLE.datapump.StopWatch;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -17,27 +17,27 @@ public class TestDataPump {
     MockDataPumpDelegate delegate;
     DataPump pump;
 
-    @Before
+    @BeforeEach
     public void setup() {
         stream = new MockDataStream();
         delegate = new MockDataPumpDelegate();
         pump = new DataPump(stream, delegate, new MockNowProvider());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void startingDataPumpSendsFirstPacket() {
         pump.startDataPump();
         assertThat(stream.writeCalls, equalTo(1));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void dataPumpIsNotRunningAfterFinishSendingPacketInSingleMode() {
         pump.startDataPump();
         pump.dataStreamWrote(stream, new byte[20]);
         assertThat(pump.isTestRunning(), equalTo(false));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void dataPumpIsStillRunningAfterSendingPacketInContinuous() {
         pump.setContinuousMode(true);
         pump.startDataPump();
@@ -45,7 +45,7 @@ public class TestDataPump {
         assertThat(pump.isTestRunning(), equalTo(true));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void dataPumpIsStillRunningWhenSendingSinglePacketLargerThanMtu() {
         pump.setPacketSize(32);
         pump.startDataPump();
@@ -53,7 +53,7 @@ public class TestDataPump {
         assertThat(pump.isTestRunning(), equalTo(true));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void continuousDoesntRestartStoppedPumpOnCallback() {
         pump.startDataPump();
         pump.stopDataPump();
@@ -61,14 +61,14 @@ public class TestDataPump {
         assertThat(pump.isTestRunning(), equalTo(false));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void startingDataPumpStartStopWatch() {
         pump.startDataPump();
         pump.dataStreamWrote(stream, new byte[20]);
         assertThat(delegate.lastDuration, greaterThan(0L));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void stoppingDataPumpStopsStopWatch() {
         pump.startDataPump();
         pump.stopDataPump();
@@ -85,7 +85,7 @@ public class TestDataPump {
         assertThat(delegate.lastDuration, greaterThan(0L));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void resetEnsuresReceiveStopWatchIsReset() {
         pump.dataStreamRead(stream, new byte[20]);
         long duration = delegate.lastDuration;
@@ -94,14 +94,14 @@ public class TestDataPump {
         assertThat(delegate.lastDuration, lessThanOrEqualTo(duration));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void correctlyKeepTrackOfReportedSentBytes() {
         pump.dataStreamWrote(stream, new byte[20]);
         pump.dataStreamWrote(stream, new byte[12]);
         assertThat(delegate.lastBytes, equalTo(32L));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void correctlyKeepTrackOfReceivedBytes() {
         pump.dataStreamRead(stream, new byte[20]);
         pump.dataStreamRead(stream, new byte[20]);
@@ -110,7 +110,7 @@ public class TestDataPump {
         assertThat(delegate.lastBytes, equalTo(64L));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void resetDataPumpResetsReceivedBytes() {
         pump.dataStreamRead(stream, new byte[20]);
         pump.resetDataPump();

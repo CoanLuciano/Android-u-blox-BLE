@@ -34,11 +34,9 @@ import com.ublox.BLE.bluetooth.BluetoothCentral;
 import com.ublox.BLE.bluetooth.BluetoothDevice;
 import com.ublox.BLE.bluetooth.BluetoothPeripheral;
 import com.ublox.BLE.bluetooth.BluetoothScanner;
-import com.ublox.BLE.fragments.KeyEntryFragment;
 import com.ublox.BLE.utils.GattAttributes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
@@ -50,7 +48,7 @@ import static android.bluetooth.BluetoothDevice.BOND_BONDED;
 import static android.bluetooth.BluetoothDevice.BOND_BONDING;
 import static android.bluetooth.BluetoothDevice.BOND_NONE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static no.nordicsemi.android.meshprovisioner.utils.SecureUtils.calculateK3;
+
 
 public class DevicesActivity extends Activity implements AdapterView.OnItemClickListener, BluetoothCentral.Delegate {
     /*
@@ -72,7 +70,6 @@ public class DevicesActivity extends Activity implements AdapterView.OnItemClick
     private LeDeviceListAdapter mLeDeviceListAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothCentral scanner;
-    private byte[] currentNetworkId = calculateK3(DEFAULT_NET_KEY);
     private byte[] currentNetKey = DEFAULT_NET_KEY;
     private byte[] currentAppKey = DEFAULT_APP_KEY;
 
@@ -175,7 +172,6 @@ public class DevicesActivity extends Activity implements AdapterView.OnItemClick
                 startActivity(aboutIntent);
                 break;
             case R.id.menu_mesh_keys:
-                showMeshDialog(null);
                 break;
         }
         return true;
@@ -237,44 +233,6 @@ public class DevicesActivity extends Activity implements AdapterView.OnItemClick
         invalidateOptionsMenu();
     }
 
-    private void showMeshDialog(BluetoothPeripheral andJoin) {
-        if (!DEFINE_MESH_ACTIVE) return;
-
-        boolean doJoin = andJoin != null;
-        boolean doSkipDialog = doJoin && hasMatchingKey(andJoin);
-
-        if (doSkipDialog) {
-            joinMesh(andJoin);
-            return;
-        }
-
-        String acceptText = doJoin ? "Join" : "Set";
-        KeyEntryFragment dialog = new KeyEntryFragment();
-        dialog.setDefaultKeys(DEFAULT_NET_KEY, DEFAULT_APP_KEY);
-        dialog.setAcceptKeys(acceptText, (netKey, appKey) -> {
-            currentNetKey = netKey;
-            currentAppKey = appKey;
-            currentNetworkId = calculateK3(netKey);
-
-            if (!doJoin) return;
-            joinMesh(andJoin);
-        });
-        dialog.show(getFragmentManager(), "KeyEntry");
-    }
-
-    private boolean hasMatchingKey(BluetoothPeripheral peripheral) {
-        byte[] serviceData = peripheral.serviceDataFor(MESH_SERVICE);
-        return serviceData.length > 8 && serviceData[0] == 0 && Arrays.equals(currentNetworkId, Arrays.copyOfRange(serviceData, 1, serviceData.length));
-    }
-
-    private void joinMesh(BluetoothPeripheral peripheral) {
-        Intent intent = new Intent(this, MeshActivity.class);
-        intent.putExtra(EXTRA_DEVICE, peripheral);
-        intent.putExtra(EXTRA_NET_KEY, currentNetKey);
-        intent.putExtra(EXTRA_APP_KEY, currentAppKey);
-        startActivity(intent);
-    }
-
     @TargetApi(23)
     private void verifyPermissionAndScan() {
         String[] request = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -318,6 +276,16 @@ public class DevicesActivity extends Activity implements AdapterView.OnItemClick
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && requestCode == BLUETOOTH_ENABLE_REQUEST) {
             if (grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
                 Toast.makeText(this, R.string.enable_permission_toast, Toast.LENGTH_LONG).show();
@@ -342,7 +310,7 @@ public class DevicesActivity extends Activity implements AdapterView.OnItemClick
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PERMISSION_GRANTED) {
                 if (DEFINE_MESH_ACTIVE && device.advertisedService(MESH_SERVICE)) {
-                    showMeshDialog(device);
+
                 } else {
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra(EXTRA_DEVICE, ((BluetoothDevice) device).toUbloxDevice());

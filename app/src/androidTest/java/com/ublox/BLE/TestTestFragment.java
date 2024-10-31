@@ -5,10 +5,10 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ublox.BLE.activities.MainActivity;
 
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -32,19 +32,19 @@ public class TestTestFragment {
     @Rule
     public ActivityTestRule<MainActivity> act = new MainWithBluetoothTestRule();
 
-    @Before
+    @BeforeEach
     public void setup() {
         waitFor(500);
         onView(withText("TEST")).perform(click());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void requestMTU_empty() {
         onView(withId(R.id.bMtu)).perform(click(), click());
         onToast(act.getActivity(), "You must enter a number").check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void requestMTU_tooSmall() {
         enterMTU("0");
         onView(withId(R.id.tvMtuSize)).check(matches(not(withText("0"))));
@@ -56,81 +56,81 @@ public class TestTestFragment {
         onView(withId(R.id.tvMtuSize)).check(matches(withText("23")));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void requestMTU_max() {
         enterMTU("247");
         onView(withId(R.id.tvMtuSize)).check(matches(withText("247")));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void requestMTU_tooLarge() {
         enterMTU("300");
         onView(withId(R.id.tvMtuSize)).check(matches(withText("247")));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void toggleCredits() {
         onView(withId(R.id.swCredits)).perform(click());
         onView(withId(R.id.swCredits)).check(matches(isChecked()));
     }
 
-    @Ignore("Datapumping seems to lock ui here, might be badly mocked")
-    @Test
+    @Disabled("Datapumping seems to lock ui here, might be badly mocked")
+    @org.junit.jupiter.api.Test
     public void toggleCredits_ongoing() {
         onView(withId(R.id.swTxTest)).perform(click());
         onView(withId(R.id.swCredits)).perform(click());
         onView(withId(R.id.swCredits)).check(matches(isNotChecked()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void sendOnePacket() {
         onView(withText("packet")).perform(click());
         onView(withId(R.id.swTxTest)).perform(click());
         onView(withId(R.id.tvTxCounter)).check(matches(withText("20 B")));
     }
 
-    @Ignore("Datapumping seems to lock ui here, might be badly mocked")
-    @Test
+    @Disabled("Datapumping seems to lock ui here, might be badly mocked")
+    @org.junit.jupiter.api.Test
     public void sendContinuous() {
         onView(withId(R.id.continuous)).perform(click());
         onView(withId(R.id.swTxTest)).perform(click());
         onView(withId(R.id.tvTxCounter)).check(matches(not(withText("0 B"))));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void clearRx() {
         onView(withId(R.id.bRxReset)).perform(click());
         onView(withId(R.id.tvRxAvg)).check(matches(withText("0.00 kbps")));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void setPacketEmpty() {
         onView(withId(R.id.etPacketSize)).perform(click(), clearText(), closeSoftKeyboard());
         onToast(act.getActivity(), "The packet length number too big or not valid!").check(matches(isDisplayed()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void toggleCredits_disconnectedNoChange() {
         onView(withId(R.id.menu_disconnect)).perform(click());
         onView(withId(R.id.swCredits)).perform(click());
         onView(withId(R.id.swCredits)).check(matches(isNotChecked()));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void requestMTU_disconnectedNoChange() {
         onView(withId(R.id.menu_disconnect)).perform(click());
         enterMTU("247");
         onView(withId(R.id.tvMtuSize)).check(matches(not(withText("247"))));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void startTxTest_disconnectedNoChange() {
         onView(withId(R.id.menu_disconnect)).perform(click());
         onView(withId(R.id.swTxTest)).perform(click());
         onView(withId(R.id.tvTxCounter)).check(matches(withText("0 B")));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void sendSinglePacketLargerThanMtuDisplaysCorrectly() {
         onView(withText("packet")).perform(click());
         onView(withId(R.id.etPacketSize)).perform(click(), clearText(), typeText("32"), closeSoftKeyboard());
